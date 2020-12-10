@@ -1,0 +1,11 @@
+html, body{
+    width: 100%;
+    height: 100%;
+    background-color: #1b1b1b;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    font-size: 12px;
+    font-family: "rubikregular", Arial, Helvetica, sans-serif;
+    direction: rtl;
+}
