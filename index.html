@@ -8,12 +8,12 @@
     <!-- <link rel="stylesheet" href="./src/dist/leaflet.css" /> -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" /> 
+        crossorigin="" />
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
         integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script> 
+        crossorigin=""></script>
 
     <link rel="shortcut icon" href="./assets/favicon.ico">
 
@@ -21,32 +21,44 @@
     <script src="./src/leaflet-side-by-side.min.js"></script>
     <script src="./src/jquery-3.5.1.min.js"></script>
     <script src="./src/script.js"></script>
-    
-
 </head>
-
 <body>
-    <div id="map"></div>
+    <div class="body">
+        <div class="main_container">
+            <video autoplay muted loop>
+                <source src="./assets/loading.mp4" type="video/mp4">
+            </video>
+    
+            <form class="form" id="form">
+                <span>
+                    <h1>על מנת לבצע השוואה בין המפות אנא בחרו שני תמונות ושני קבצי Kml:</h1>
+                </span>
+                
+                <span id="error_message" class="error_message">
+                    הודעת שגיאה
+                </span>
 
-    <script>
-        // var map = L.map('map').setView([32.0413, 34.7929], 1);
+                <label for="image_1" class="label_button">תמונה 1</label>
+                <input type='file' id="image_1" class="hidden" />
 
-        // map.createPane('left');
-        // map.createPane('right');
+                <label for="image_2" class="label_button">תמונה 2</label>
+                <input type='file' id="image_2" class="hidden" />
 
-        // var round1 = './images/round3.jpg',
-        // imageBounds = [[32.048316, 34.800225], [32.041330, 34.792927]];
-        // var leftLayer = L.imageOverlay(round1, imageBounds, { pane: 'left' }).addTo(map);
+                <br>
 
-        // var atlantis = 'http://localhost/leaflet-compare/0.2/images/round2.jpg',
-        // imageBounds = [[7.9409, -131.1589], [29.2144, -82.6558]];
-        // var rightLayer = L.imageOverlay(atlantis, imageBounds, { pane: 'right' }).addTo(map);
-
-        // L.control.sideBySide(leftLayer, rightLayer).addTo(map);
-
-        // L.imageOverlay(round1, imageBounds).addTo(map);
-
-    </script>
+                <label for="kml_1" class="label_button">Kml 1</label>
+                <input type='file' id="kml_1" class="hidden" />
+                
+                <label for="kml_2" class="label_button">Kml 2</label>
+                <input type='file' id="kml_2" class="hidden" />
+    
+                <button id="start_comparison" class="submit_button label_button">
+                    בצע השוואה
+                </button>
+            </form>
+        </div>
+        <div id="map" class="map"></div>
+    </div>
 </body>
 
 </html>

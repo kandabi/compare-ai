@@ -1,11 +1,148 @@
 html, body{
     width: 100%;
     height: 100%;
-    background-color: #1b1b1b;
+    background: rgb(255,214,112);
+    background: linear-gradient(48deg, rgba(255,214,112,1) 0%, rgba(253,101,98,1) 100%);
     padding: 0;
     margin: 0;
     position: absolute;
     font-size: 12px;
     font-family: "rubikregular", Arial, Helvetica, sans-serif;
     direction: rtl;
+}
+
+@font-face {
+    font-family: "rubikregular";
+    src: url("../assets/fonts/rubik-regular.woff2") format("woff2"),
+      url("../assets/fonts/rubik-regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+button{
+    font-family: "rubikregular", Arial, Helvetica, sans-serif;
+}
+
+h1{
+    font-size:1.8rem;
+}
+
+.body{
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.main_container{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    height: 80%;
+    width: 95%;
+    background-color:#fff;
+    border-radius: 3px;
+    z-index:5;
+    -webkit-box-shadow: 0px 2px 6px 2px rgba(0,0,0,0.65); 
+    box-shadow: 0px 2px 6px 2px rgba(0,0,0,0.65);
+}
+
+.main_container video{
+    margin: 0 auto;
+    display: block;
+    max-width: 100%;
+}
+
+.hidden{
+    display:none;
+}
+
+.label_button{
+    padding: 10px 20px;
+    margin: 5px;
+    border: 1px solid #5797ff;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 1px;
+    display: inline-block;
+    font-weight: bold;
+    background-color: #5797ff;
+}
+
+.submit_button{
+    color:black;
+    border-color:#78ff63;
+    background-color: #78ff63;
+    position: absolute;
+    left:25px;
+    bottom:15px;
+}
+
+.label_button:hover,
+.label_button:active,
+.label_button:focus {
+  background: #6ba3ff;
+}
+
+.submit_button:hover,
+.submit_button:active,
+.submit_button:focus {
+  background: #8cff7a;
+}
+
+.form{
+    text-align: right;
+    display: block;
+    width: 90%;
+    margin: 0 auto;
+    padding: 15px 0;
+}
+
+.disabled{
+    opacity:0.5;   
+}
+
+.error_message{
+    display:none;
+    color:red;
+}
+
+.map{
+    width:97%;
+    height:97%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    direction: ltr;
+    opacity: 0;
+    z-index:0;
+}
+
+@media (min-width: 600px) and (min-height: 500px) {
+    .main_container{
+        height: 70%;
+        width: 50%;
+        font-size: 2rem;
+    }
+}
+
+
+@media (min-width: 1100px) and (min-height: 700px) {
+    .main_container{
+        height: 60%;
+        width: 30%;
+    }
+
+    .left_container{
+        left:20%;
+    }
+
+    .right_container{
+        right: 20%;
+    }
 }
