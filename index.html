@@ -1,42 +1,40 @@
 <!DOCTYPE html>
 <html lang="he">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מעל ישראל השוואת מפות</title>
-    <!-- <link rel="stylesheet" href="./src/dist/leaflet.css" /> -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-        crossorigin="" />
-
-    <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
+    
+    <meta prefix="og: https://compare-ai.com/" property="og:title" content="מעל ישראל השוואת מפות" />
+    <meta prefix="og: https://compare-ai.com/" property="og:url" content="https://compare-ai.com/" />
+    <meta prefix="og: https://compare-ai.com/" property="og:image" content="https://compare-ai.com/assets/og.png" name="image" />
+    <meta prefix="og: https://compare-ai.com/" property="og:type" content="website" />
+    <meta prefix="og: https://compare-ai.com/" property="og:locale" content="he_IL" />
 
     <link rel="shortcut icon" href="./assets/favicon.ico">
-
-    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./src/style.css">
+    <link rel="stylesheet" href="./src/dist/leaflet.css"/>
+    
+    <script src="./src/dist/leaflet.js"></script>
     <script src="./src/leaflet-side-by-side.min.js"></script>
     <script src="./src/jquery-3.5.1.min.js"></script>
     <script src="./src/script.js"></script>
 </head>
 <body>
+    <div class='loader'>
+        <img width="100" height="100" src="./assets/loading.svg">
+    </div>
     <div class="body">
         <div class="main_container">
-            <video autoplay muted loop>
-                <source src="./assets/loading.mp4" type="video/mp4">
-            </video>
-    
+            <div class="video_container">
+                <video autoplay loop muted>
+                    <source src="./assets/drone.mp4" type="video/mp4">
+                </video>
+            </div>
             <form class="form" id="form">
                 <span>
-                    <h1>על מנת לבצע השוואה בין המפות אנא בחרו שני תמונות ושני קבצי Kml:</h1>
-                </span>
-                
-                <span id="error_message" class="error_message">
-                    הודעת שגיאה
-                </span>
+                    <h1>על מנת לבצע השוואה בין שתי מפות אנא בחר שני קבצי Orthomosaic ושני קבצי KML:</h1>
+                </span>      
 
                 <label for="image_1" class="label_button">תמונה 1</label>
                 <input type='file' id="image_1" class="hidden" />
@@ -44,21 +42,31 @@
                 <label for="image_2" class="label_button">תמונה 2</label>
                 <input type='file' id="image_2" class="hidden" />
 
-                <br>
-
                 <label for="kml_1" class="label_button">Kml 1</label>
                 <input type='file' id="kml_1" class="hidden" />
                 
                 <label for="kml_2" class="label_button">Kml 2</label>
                 <input type='file' id="kml_2" class="hidden" />
     
+                <br>
+                <br>
+                <span id="error_message" class="error_message">
+                    הודעת שגיאה
+                </span>
+
+                <div class='upload_loader'>
+                    <img width="50" height="50" src="./assets/loading.svg">
+                </div>
                 <button id="start_comparison" class="submit_button label_button">
                     בצע השוואה
                 </button>
             </form>
         </div>
-        <div id="map" class="map"></div>
+        <div class="map_container">
+            <div id="map" class="map">
+                <div class="return_button label_button">יצירת פרויקט חדש</div>
+            </div>
+        </div>
     </div>
 </body>
-
 </html>
