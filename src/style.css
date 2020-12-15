@@ -114,13 +114,13 @@ h1{
 .label_button:hover,
 .label_button:active,
 .label_button:focus {
-  background: #6ba3ff;
+  background: #6ba3ff !important;
 }
 
-.submit_button:hover,
-.submit_button:active,
-.submit_button:focus {
-  background: #8cff7a;
+.main_container .submit_button:hover,
+.main_container .submit_button:active,
+.main_container .submit_button:focus {
+  background: #8cff7a !important;
 }
 
 .form{
@@ -153,22 +153,29 @@ h1{
     direction: ltr;
     opacity: 0;
     z-index:0;
-    cursor: initial !important;
+}
+
+.map .label_button{
+    background-color: #fff;
+    color:black;
+    border: 1px solid gray;
+    cursor: pointer;
+    margin: 0;
 }
 
 .return_button{
-    background-color: #fff;
-    color:initial;
+    color: initial;
     position: absolute;
-    right: 0;
-    top: 0;
-    cursor: pointer;
-    display:none;
-    /* opacity: 0; */
+    left: 60px;
+    border-radius: 4px;
+    top: 11px;
+    display: none;
     z-index: 15;
 }
 
-
+.map .leaflet-overlay-pane{
+    z-index:1000 !important;
+}
 
 @media (min-width: 800px) and (min-height: 550px)  {
     .main_container{

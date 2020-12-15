@@ -2,14 +2,14 @@ $(function () {
   initApp()
 
   $(".loader").fadeOut(500, function () {
-      $(".body").animate({ opacity: 1, }, 700);
+    $(".body").animate({ opacity: 1, }, 700);
   });
 });
 
 function initApp() {
   console.log('init')
 
-  $("#image_1, #image_2").on("change", function() {
+  $("#image_1, #image_2").on("change", function () {
     if (!isUploading) {
       showLoader();
       uploadImage(this.files[0]);
@@ -17,29 +17,27 @@ function initApp() {
     }
   });
 
-  $("#kml_1, #kml_2").on("change", function() {
-      showLoader();
-      uploadKml(this.files[0]);
-      disableButton(this);
+  $("#kml_1, #kml_2").on("change", function () {
+    showLoader();
+    uploadKml(this.files[0]);
+    disableButton(this);
   });
 
-  $(".return_button").click(function () {
-      resetApp()
-  });
+
 
   $("#form").submit(function (e) {
-      e.preventDefault();
+    e.preventDefault();
   });
 
   $('#start_comparison').click(function () {
-      showLoader();
-      result = setLeafletData();
-      if (result) {
-        setTimeout(function(){
-          hideLoader();
-          showLeaflet();
-        }, 2500);
-      }
+    showLoader();
+    result = setLeafletData();
+    if (result) {
+      setTimeout(function () {
+        hideLoader();
+        showLeaflet();
+      }, 2500);
+    }
   });
 
   initLeaflet();
@@ -63,7 +61,7 @@ function uploadKml(input) {
       enableLastButton();
       showMessage('אירעה שגיאה בקריאת הנתונים של קובץ ה-KML.', 'red')
     }
-    else{
+    else {
       showMessage('הקובץ נקלט בהצלחה.')
     }
   };
@@ -123,23 +121,21 @@ function enableLastButton() {
 }
 
 function showLoader() {
-    $('.upload_loader').animate({ opacity: 1 });
+  $('.upload_loader').animate({ opacity: 1 });
 }
 
 function hideLoader() {
-    $('.upload_loader').animate({ opacity: 0 });
+  $('.upload_loader').animate({ opacity: 0 });
 }
 
 var messageCallback = null;
 
 function showMessage(message, color = 'green', time = 2500) {
-    clearTimeout(messageCallback);
-    $('#error_message').text(message).css('color', color).animate({ opacity: 1 });
-    messageCallback = setTimeout(function () {
-        $('#error_message').animate({ opacity: 0 });
-    }, time);
-
-    console.log('msg:', time);
+  clearTimeout(messageCallback);
+  $('#error_message').text(message).css('color', color).animate({ opacity: 1 });
+  messageCallback = setTimeout(function () {
+    $('#error_message').animate({ opacity: 0 });
+  }, time);
 }
 
 function setLeafletData() {
@@ -157,26 +153,43 @@ function setLeafletData() {
   var leftLayer = L.imageOverlay(imageCollection[0].currentSrc, imageBounds[0], { pane: 'left' }).addTo(map);
   var rightLayer = L.imageOverlay(imageCollection[1].currentSrc, imageBounds[1], { pane: 'right' }).addTo(map);
 
-  L.control.sideBySide(leftLayer, rightLayer).addTo(map);
-  map.setView(imageBounds[1][0]);
+  // FeatureGroup is to store editable layers
+  var drawnItems = new L.FeatureGroup();
+  map.addLayer(drawnItems);
+  var drawControl = new L.Control.Draw({
+      edit: {
+          featureGroup: drawnItems
+      }
+  });
 
+  map.addControl(drawControl);
+  map.on(L.Draw.Event.CREATED, function (event) {
+    var layer = event.layer;
+    drawnItems.addLayer(layer);
+    drawnItems.bringToFront()
+  });
+
+  L.control.layers(null, { 'drawlayer': drawnItems }, { position: 'topleft', collapsed: false });
+  L.control.sideBySide(leftLayer, rightLayer).addTo(map);
+
+  map.setView(imageBounds[1][0]);
   return true;
 }
 
 function showLeaflet() {
-  $(".main_container").animate({ opacity: 0 }, function(){
-      $('.return_button').css({ 'display': 'block' });
-      $("#map").animate({ opacity: 1 }).css({ 'z-index': '10' });
+  $(".main_container").animate({ opacity: 0 }, function () {
+    $('.return_button').css({ 'display': 'block' });
+    $("#map").animate({ opacity: 1 }).css({ 'z-index': '10' });
   });
 }
 
 function resetApp() {
-  $("#map").animate({ opacity: 0 }, function(){
+  $("#map").animate({ opacity: 0 }, function () {
     $('.return_button').css({ 'display': 'none' });
-    $("#image_1, #image_2, #kml_1, #kml_2").each(function() {
-        console.log('reset:', this);
-        $(this).attr("disabled");
-        $("label[for='" + $(this).attr('id') + "']").removeClass('disabled');
+    $("#image_1, #image_2, #kml_1, #kml_2").each(function () {
+      console.log('reset:', this);
+      $(this).attr("disabled");
+      $("label[for='" + $(this).attr('id') + "']").removeClass('disabled');
     });
     $("#image_1, #image_2, #kml_1, #kml_2").val('');
     map.off();
@@ -195,21 +208,25 @@ function initLeaflet() {
 
   map.createPane('left');
   map.createPane('right');
+
+  $(".return_button").click(function () {
+    resetApp()
+  });
 }
 
 function parseKml(xmlDom) {
   try {
-      var south = parseFloat(xmlDom.getElementsByTagName('south')[0].textContent);
-      var west = parseFloat(xmlDom.getElementsByTagName('west')[0].textContent);
-      var north = parseFloat(xmlDom.getElementsByTagName('north')[0].textContent) * 1;
-      var east = parseFloat(xmlDom.getElementsByTagName('east')[0].textContent) * 1;
+    var south = parseFloat(xmlDom.getElementsByTagName('south')[0].textContent);
+    var west = parseFloat(xmlDom.getElementsByTagName('west')[0].textContent);
+    var north = parseFloat(xmlDom.getElementsByTagName('north')[0].textContent) * 1;
+    var east = parseFloat(xmlDom.getElementsByTagName('east')[0].textContent) * 1;
 
-      var bounds = [[south, west], [north, east]];
-      imageBounds.push(bounds);
-      console.log(bounds);
-      return true;
-    }
-    catch {
-      return false;
-    }
+    var bounds = [[south, west], [north, east]];
+    imageBounds.push(bounds);
+    console.log(bounds);
+    return true;
+  }
+  catch {
+    return false;
+  }
 }
