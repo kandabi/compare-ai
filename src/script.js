@@ -48,6 +48,7 @@ var imageBounds = [];
 var imageCollection = [];
 var disabledButtons = [];
 var isUploading = false;
+var mapSelectorColor = "#6ba3ff";
 const max_resolution = 19000;
 
 function uploadKml(input) {
@@ -162,14 +163,122 @@ function setLeafletData() {
       }
   });
 
+  L.drawLocal = {
+    draw: {
+      toolbar: {
+        // #TODO: this should be reorganized where actions are nested in actions
+        // ex: actions.undo  or actions.cancel
+        actions: {
+          title: 'ביטול',
+          text: 'ביטול'
+        },
+        finish: {
+          title: 'שמירה',
+          text: 'שמירה'
+        },
+        undo: {
+          title: 'ביטול פעולה אחרונה',
+          text: 'ביטול פעולה אחרונה'
+        },
+        buttons: {
+          polyline: 'קו',
+          polygon: 'מצולע',
+          rectangle: 'מלבן',
+          circle: 'עיגול',
+          marker: 'סימון נקודה',
+        }
+      },
+      handlers: {
+        circle: {
+          tooltip: {
+            start: 'לחץ לציור עיגול על המפה, גרור את העכבר כדי להגדיל את הקוטר.'
+          },
+          radius: 'רדיוס'
+        },
+        marker: {
+          tooltip: {
+            start: 'בחר נקודה על המפה.'
+          }
+        },
+        polygon: {
+          tooltip: {
+            start: 'לחץ להתחלת ציור מצולע',
+            cont: 'המשך לבחור פינות',
+            end: 'לחץ על כפתור הסיום כדי לשמור את השינויים.'
+          }
+        },
+        polyline: {
+          error: '<strong>Error:</strong> shape edges cannot cross!',
+          tooltip: {
+            start: 'לחץ להתחלת ציור קו',
+            cont: 'לחץ כדי להמשיך לצייר קווים נוספים.',
+            end: 'לחץ על הנקודה האחרונה כדי לסיים.'
+          }
+        },
+        rectangle: {
+          tooltip: {
+            start: 'מצולע'
+          }
+        },
+        simpleshape: {
+          tooltip: {
+            end: 'שחרר את העכבר כדי לסיים עריכה.'
+          }
+        }
+      }
+    },
+    edit: {
+      toolbar: {
+        actions: {
+          save: {
+            title: 'שמירת שינויים',
+            text: 'שמירה'
+          },
+          cancel: {
+            title: 'ביטול עריכה, מחיקת כל השינויים.',
+            text: 'ביטול'
+          },
+          clearAll: {
+            title: 'מחיקת כל השכבות',
+            text: 'מחיקה'
+          }
+        },
+        buttons: {
+          edit: 'עריכת שכבות',
+          editDisabled: 'אין שכבות לעריכה.',
+          remove: 'מחיקת שכבות',
+          removeDisabled: 'אין שכבות למחיקה.'
+        }
+      },
+      handlers: {
+        edit: {
+          tooltip: {
+            text: 'גרור סימונים או פינות כדי לערוך את הסימונים.',
+            subtext: 'לחץ על ביטול כדי לבטל את השינויים.'
+          }
+        },
+        remove: {
+          tooltip: {
+            text: 'לחץ על צורה שברצונך למחוק'
+          }
+        }
+      }
+    }
+  };
+
   map.addControl(drawControl);
-  map.on(L.Draw.Event.CREATED, function (event) {
-    var layer = event.layer;
-    drawnItems.addLayer(layer);
-    drawnItems.bringToFront()
+  // Object created - bind popup to layer, add to feature group
+  map.on(L.Draw.Event.CREATED, function(event) {
+      var layer = event.layer;
+      layer.options.color = mapSelectorColor;
+      var content = getPopupContent(layer);
+      if (content !== null) {
+          layer.bindPopup(content, {removable: true, editable: true});
+      }
+      drawnItems.addLayer(layer);
   });
 
-  L.control.layers(null, { 'drawlayer': drawnItems }, { position: 'topleft', collapsed: false });
+  L.control.layers(null, { 'שכבת ציור': drawnItems }, { position: 'topright', collapsed: false }).addTo(map);
   L.control.sideBySide(leftLayer, rightLayer).addTo(map);
 
   map.setView(imageBounds[1][0]);
@@ -213,6 +322,49 @@ function initLeaflet() {
     resetApp()
   });
 }
+
+// Generate popup content based on layer type
+// - Returns HTML string, or null if unknown object
+var getPopupContent = function(layer) {
+  // Marker - add lat/long
+  if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
+      return strLatLng(layer.getLatLng());
+  // Circle - lat/long, radius
+  } else if (layer instanceof L.Circle) {
+      var center = layer.getLatLng(),
+          radius = layer.getRadius();
+      return "מרכז: "+strLatLng(center)+"<br />"
+            +"רדיוס: "+_round(radius, 2)+" מטרים";
+  // Rectangle/Polygon - area
+  } else if (layer instanceof L.Polygon) {
+      var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
+          area = L.GeometryUtil.geodesicArea(latlngs);
+          var readableArea = L.GeometryUtil.readableArea(area, true);
+      return "שטח: "+ readableArea.substring(0, readableArea.length - 2) + " הקטר.";
+  // Polyline - distance
+  } else if (layer instanceof L.Polyline) {
+      var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
+          distance = 0;
+      if (latlngs.length < 2) {
+          return "מרחק: N/A";
+      } else {
+          for (var i = 0; i < latlngs.length-1; i++) {
+              distance += latlngs[i].distanceTo(latlngs[i+1]);
+          }
+          return "מרחק: "+_round(distance, 2)+" מטרים";
+      }
+  }
+  return null;
+};
+
+// Truncate value based on number of decimals
+var _round = function(num, len) {
+  return Math.round(num*(Math.pow(10, len)))/(Math.pow(10, len));
+};
+// Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
+var strLatLng = function(latlng) {
+  return "("+_round(latlng.lat, 6)+", "+_round(latlng.lng, 6)+")";
+};
 
 function parseKml(xmlDom) {
   try {

@@ -153,6 +153,10 @@ h1{
     direction: ltr;
     opacity: 0;
     z-index:0;
+    background-color: #fff4d6 !important;
+    -webkit-box-shadow: 0px 2px 6px 2px rgba(0,0,0,0.65); 
+    box-shadow: 0px 2px 6px 2px rgba(0,0,0,0.65);
+    border-radius: 4px;
 }
 
 .map .label_button{
@@ -161,20 +165,53 @@ h1{
     border: 1px solid gray;
     cursor: pointer;
     margin: 0;
+    font-family: "rubikregular", Arial, Helvetica, sans-serif;
 }
 
-.return_button{
+.map .leaflet-overlay-pane{
+    z-index:1000 !important;
+}
+
+.map .leaflet-control-layers-overlays{
+    direction: rtl;
+}
+
+.map .return_button{
     color: initial;
     position: absolute;
     left: 60px;
     border-radius: 4px;
     top: 11px;
     display: none;
-    z-index: 15;
+    z-index: 10000;
 }
 
-.map .leaflet-overlay-pane{
-    z-index:1000 !important;
+.map .leaflet-control-layers-overlays span{
+    font-family: "rubikregular", Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    padding-left: 8px;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+.map .leaflet-sbs-divider{
+    width: 5px;
+    background-color: #ff4540;
+}
+
+.map .leaflet-popup-content{
+    direction: rtl;
+}
+
+.map.leaflet-container a{
+    direction: rtl;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    background-color: #FAAD6A;
+    border:1px solid #ff4540;
 }
 
 @media (min-width: 800px) and (min-height: 550px)  {
