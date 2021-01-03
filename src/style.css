@@ -172,6 +172,15 @@ h1{
     z-index:1000 !important;
 }
 
+.map .leaflet-popup-pane{
+    z-index:10000 !important;
+}
+
+
+.map .leaflet-popup-content-wrapper{
+    text-align: right;
+}
+
 .map .leaflet-control-layers-overlays{
     direction: rtl;
 }

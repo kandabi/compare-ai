@@ -327,20 +327,25 @@ function initLeaflet() {
 // - Returns HTML string, or null if unknown object
 var getPopupContent = function(layer) {
   // Marker - add lat/long
-  if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
-      return strLatLng(layer.getLatLng());
+  if (layer instanceof L.Marker) {
+      return "נ.צ. " + strLatLng(layer.getLatLng());
   // Circle - lat/long, radius
-  } else if (layer instanceof L.Circle) {
+  } else if (layer instanceof L.Circle || layer instanceof L.CircleMarker ) {
       var center = layer.getLatLng(),
           radius = layer.getRadius();
-      return "מרכז: "+strLatLng(center)+"<br />"
-            +"רדיוס: "+_round(radius, 2)+" מטרים";
+      return "נ.צ. מרכז העיגול: "+strLatLng(center) + "<br />" +
+             "רדיוס: " + _round(radius, 2) + " מטרים" + "<br />" +
+             "שטח: " + Math.PI * radius * radius + " ²מ";
   // Rectangle/Polygon - area
   } else if (layer instanceof L.Polygon) {
       var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
           area = L.GeometryUtil.geodesicArea(latlngs);
           var readableArea = L.GeometryUtil.readableArea(area, true);
-      return "שטח: "+ readableArea.substring(0, readableArea.length - 2) + " הקטר.";
+          var hectares = readableArea.substring(0, readableArea.length - 2);
+          var metersSquared = _round(hectares / 100, 5);
+          var returnStr = "שטח : " + metersSquared + ' ק"מ² <br>';
+          returnStr += "הקטר: " + hectares;
+      return returnStr;
   // Polyline - distance
   } else if (layer instanceof L.Polyline) {
       var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
