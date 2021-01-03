@@ -335,7 +335,7 @@ var getPopupContent = function(layer) {
           radius = layer.getRadius();
       return "נ.צ. מרכז העיגול: "+strLatLng(center) + "<br />" +
              "רדיוס: " + _round(radius, 2) + " מטרים" + "<br />" +
-             "שטח: " + Math.PI * radius * radius + " ²מ";
+             "שטח: " + _round(Math.PI * radius * radius, 6) + " ²מ";
   // Rectangle/Polygon - area
   } else if (layer instanceof L.Polygon) {
       var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
@@ -356,7 +356,7 @@ var getPopupContent = function(layer) {
           for (var i = 0; i < latlngs.length-1; i++) {
               distance += latlngs[i].distanceTo(latlngs[i+1]);
           }
-          return "מרחק: "+_round(distance, 2)+" מטרים";
+          return "מרחק: " + _round(distance, 2) + " מטרים";
       }
   }
   return null;
